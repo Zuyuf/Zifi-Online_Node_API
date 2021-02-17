@@ -17,9 +17,7 @@ function validateCategory(category) {
       name: Joi.string().min(5).max(50).required(),
    });
 
-   const ans = joiCategorySchema.validate(category);
-
-   return ans;
+   return joiCategorySchema.validate(category);
 }
 
 exports.Category = Category;
