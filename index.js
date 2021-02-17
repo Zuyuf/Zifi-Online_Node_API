@@ -5,7 +5,10 @@ const categories = require("./routes/categories");
 const app = express();
 
 mongoose
-   .connect("mongodb://localhost/zifi")
+   .connect("mongodb://localhost/zifi", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+   })
    .then(() => console.log("Connected to MongoDB..."))
    .catch((ex) => console.error("Couldn't connect to MongoDB!!"));
 
