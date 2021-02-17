@@ -1,4 +1,3 @@
-const { func } = require("joi");
 const Joi = require("joi");
 const mongoose = require("mongoose");
 
@@ -14,11 +13,13 @@ const categorySchema = new mongoose.Schema({
 const Category = mongoose.model("Category", categorySchema);
 
 function validateCategory(category) {
-   const joiSchema = {
+   const joiCategorySchema = Joi.object({
       name: Joi.string().min(5).max(50).required(),
-   };
+   });
 
-   return Joi.validate(category, joiSchema);
+   const ans = joiCategorySchema.validate(category);
+
+   return ans;
 }
 
 exports.Category = Category;
