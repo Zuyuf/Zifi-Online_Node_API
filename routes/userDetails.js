@@ -1,14 +1,15 @@
 const express = require("express");
 const { UserDetail, validateUserDetail } = require("../models/userDetail");
+const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", [auth], async (req, res) => {
    const userDetail = await UserDetail.find();
    res.send(userDetail);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", [auth], async (req, res) => {
    const userDetail = await UserDetail.findById(req.params.id);
 
    if (!userDetail)
@@ -19,7 +20,7 @@ router.get("/:id", async (req, res) => {
    res.send(userDetail);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", [auth], async (req, res) => {
    const { error } = validateUserDetail(req.body);
    if (error) return res.status(400).send(error.details[0].message);
 
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
    res.send(userDetails);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", [auth], async (req, res) => {
    const { error } = validateUserDetail(req.body);
    if (error) return res.status(400).send(error.details[0].message);
 
@@ -47,7 +48,7 @@ router.put("/:id", async (req, res) => {
    res.send(userDetails);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth], async (req, res) => {
    const userDetails = await UserDetail.findByIdAndDelete(req.params.id);
 
    if (!userDetails)
