@@ -1,0 +1,4 @@
+{
+   "jwtPrivateKey": "mySecureKey",
+   "bcryptSaltKey": 10
+}
