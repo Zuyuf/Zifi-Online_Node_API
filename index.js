@@ -1,38 +1,15 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const config = require("config");
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
 
 const app = express();
 
-const categories = require("./routes/categories");
-const userDetails = require("./routes/userDetails");
-const users = require("./routes/users");
-const auth = require("./routes/auth");
-
-// ImMPORTANT Config Variables
-if (!config.get("jwtPrivateKey")) {
-   console.error("FATAL ERROR: jwtPrivateKey is Not Defined!!!");
-   process.exit(1);
-}
-
-// CONNECT to MongoDB
-mongoose
-   .connect("mongodb://localhost/zifi", {
-      useNewUrlParser: true,
-      useFindAndModify: false,
-   })
-   .then(() => console.log("Connected to MongoDB..."))
-   .catch((ex) => console.error("Couldn't connect to MongoDB!!"));
-
-// PIPELINE
-app.use(express.json());
-app.use("/api/categories", categories);
-app.use("/api/userDetails", userDetails);
-app.use("/api/users", users);
-app.use("/api/auth", auth);
+// Statup
+const { logger } = require("./startup/logging");
+console.log(" b4 global imports Logger");
+require("./startup/globalImports")();
+require("./startup/routes")(app);
+require("./startup/db")();
+require("./startup/config")();
 
 // Config PORT
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+app.listen(port, () => logger.info(`Listening on port ${port}...  `));
