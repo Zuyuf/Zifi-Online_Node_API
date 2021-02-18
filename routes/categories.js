@@ -2,6 +2,7 @@ const express = require("express");
 const { Category, validateCategory } = require("../models/category");
 const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
+const validateObjectId = require("../middlewares/validateObjectId");
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.get("/", async (req, res) => {
    res.send(categories);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateObjectId, async (req, res) => {
    const category = await Category.findById(req.params.id);
 
    if (!category)
@@ -29,7 +30,7 @@ router.post("/", [auth, admin], async (req, res) => {
    res.send(category);
 });
 
-router.put("/:id", [auth, admin], async (req, res) => {
+router.put("/:id", [auth, admin, validateObjectId], async (req, res) => {
    const { error } = validateCategory(req.body);
    if (error) return res.status(400).send(error.details[0].message);
 
@@ -45,7 +46,7 @@ router.put("/:id", [auth, admin], async (req, res) => {
    res.send(category);
 });
 
-router.delete("/:id", [auth, admin], async (req, res) => {
+router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
    const category = await Category.findByIdAndDelete(req.params.id);
 
    if (!category)

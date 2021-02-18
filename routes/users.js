@@ -2,12 +2,11 @@ const _ = require("lodash");
 const express = require("express");
 const { User, validateUser } = require("../models/user");
 const auth = require("../middlewares/auth");
-const admin = require("../middlewares/admin");
 
 const router = express.Router();
 
 router.get("/me", [auth], async (req, res) => {
-   const users = await (await User.findById(req.user._id)).isSelected(
+   const users = await User.findById(req.user._id).isSelected(
       "-password -userDetails"
    );
    res.send(users);

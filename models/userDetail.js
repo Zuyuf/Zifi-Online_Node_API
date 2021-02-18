@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const mongoose = require("mongoose");
+const _ = require("lodash");
 
 const address = new mongoose.Schema({
    name: {
@@ -90,6 +91,17 @@ const userDetailSchema = new mongoose.Schema({
    },
 });
 
+userDetailSchema.statics.pickReqiuredParams = function (data) {
+   return _.pick(data, [
+      "firstName",
+      "lastName",
+      "addresses",
+      "homePhone",
+      "workPhone",
+      "cards",
+   ]);
+};
+
 const UserDetail = mongoose.model("UserDetail", userDetailSchema);
 
 function validateUserDetail(details) {
@@ -123,10 +135,7 @@ function validateUserDetail(details) {
       cards: Joi.array().min(1).max(5).items(joiCardsSchema).required(),
    });
 
-   const ans = joiUserDetailSchema.validate(details);
-   console.log(ans);
-
-   return ans;
+   return joiUserDetailSchema.validate(details);
 }
 
 exports.UserDetail = UserDetail;

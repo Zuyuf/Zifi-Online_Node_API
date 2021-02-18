@@ -4,7 +4,6 @@ const app = express();
 
 // Statup
 const { logger } = require("./startup/logging");
-console.log(" b4 global imports Logger");
 require("./startup/globalImports")();
 require("./startup/routes")(app);
 require("./startup/db")();
