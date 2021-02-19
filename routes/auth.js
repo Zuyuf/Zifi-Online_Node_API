@@ -1,14 +1,15 @@
 const Joi = require("joi");
 const express = require("express");
-const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
+
+const { User } = require("../models/user");
+const validate = require("../middlewares/validate");
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-   const { error } = validate(req.body);
-   if (error) return res.status(400).send(error.details[0].message);
+//
 
+router.post("/", validate(validateUserLogin), async (req, res) => {
    let user = await User.findOne({ email: req.body.email });
    if (!user) return res.status(400).send("Invalid Email or Password");
 
@@ -19,7 +20,7 @@ router.post("/", async (req, res) => {
    res.send(token);
 });
 
-function validate(user) {
+function validateUserLogin(user) {
    const joiUserSchema = Joi.object({
       email: Joi.string().email().min(5).max(255).required(),
       password: Joi.string().min(4).max(255).required(),
