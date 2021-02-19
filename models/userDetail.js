@@ -1,4 +1,5 @@
 const Joi = require("joi");
+Joi.objectId = require("joi-objectid")(Joi);
 const mongoose = require("mongoose");
 const _ = require("lodash");
 
@@ -93,6 +94,7 @@ const userDetailSchema = new mongoose.Schema({
 
 userDetailSchema.statics.pickReqiuredParams = function (data) {
    return _.pick(data, [
+      "user_id",
       "firstName",
       "lastName",
       "addresses",
