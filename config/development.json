@@ -1,4 +1,5 @@
 {
    "jwtPrivateKey": "devSecureKey",
-   "bcryptSaltKey": 10
+   "bcryptSaltKey": 10,
+   "db": "mongodb://localhost/zifi_dev"
 }
