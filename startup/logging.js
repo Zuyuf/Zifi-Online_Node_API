@@ -12,19 +12,19 @@ let logger = createLogger({
       format.json()
    ),
    transports: [
-      new transports.File({ level: "error", filename: "../logs/error.log" }),
-      new transports.File({ level: "info", filename: "../logs/info.log" }),
+      new transports.File({ level: "error", filename: "./logs/error.log" }),
+      new transports.File({ level: "info", filename: "./logs/info.log" }),
    ],
    exceptionHandlers: [
       new transports.File({
          level: "error",
-         filename: "../logs/exceptions.log",
+         filename: "./logs/exceptions.log",
       }),
    ],
    rejectionHandlers: [
       new transports.File({
          level: "error",
-         filename: "../logs/rejections.log",
+         filename: "./logs/rejections.log",
       }),
    ],
    exitOnError: true,
@@ -62,7 +62,7 @@ if (process.env.NODE_ENV !== "production") {
    );
 }
 
-exports.logger = logger;
+module.exports = logger;
 
 //
 //
