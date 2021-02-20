@@ -120,7 +120,6 @@ function validateUserDetail(details) {
    });
 
    const joiUserDetailSchema = Joi.object({
-      user_id: Joi.objectId().required(),
       firstName: Joi.string().trim().min(5).max(50).required(),
       lastName: Joi.string().trim().min(5).max(50).required(),
       addresses: Joi.array().min(1).max(5).items(joiAddressSchema).required(),
