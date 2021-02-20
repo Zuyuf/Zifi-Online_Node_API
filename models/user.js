@@ -31,10 +31,12 @@ const userSchema = new mongoose.Schema({
       default: false,
    },
 
-   userDetails: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "UserDetail",
-   },
+   userDetails: [
+      {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: "UserDetail",
+      },
+   ],
 });
 
 userSchema.methods.generateAuthToken = function () {
