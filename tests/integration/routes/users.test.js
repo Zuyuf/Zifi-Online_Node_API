@@ -156,7 +156,7 @@ describe("/api/users", () => {
       };
 
       //
-      it("should return 404 if name is not provided", async () => {
+      it("should return 400 if name is not provided", async () => {
          user_data = _.pick(user_data, [
             "email",
             "password",
@@ -169,7 +169,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if name is less then 5 characters", async () => {
+      it("should return 400 if name is less then 5 characters", async () => {
          user_data.name = "ABCD";
 
          const res = await exec();
@@ -177,7 +177,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if name is greater then 50 characters", async () => {
+      it("should return 400 if name is greater then 50 characters", async () => {
          user_data.name = new Array(52).join("a");
 
          const res = await exec();
@@ -186,7 +186,7 @@ describe("/api/users", () => {
       });
 
       //
-      it("should return 404 if email is not provided", async () => {
+      it("should return 400 if email is not provided", async () => {
          user_data = _.pick(user_data, [
             "name",
             "password",
@@ -199,7 +199,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if email is not valid", async () => {
+      it("should return 400 if email is not valid", async () => {
          user_data.email = "email";
 
          const res = await exec();
@@ -207,7 +207,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if email is greater then 255 characters", async () => {
+      it("should return 400 if email is greater then 255 characters", async () => {
          let name = new Array(257).join("a");
          user_data.email = `${name}@xxxyyyzzz.com`;
 
@@ -217,7 +217,7 @@ describe("/api/users", () => {
       });
 
       //
-      it("should return 404 if password is not provided", async () => {
+      it("should return 400 if password is not provided", async () => {
          user_data = _.pick(user_data, ["email", "name", "isAdmin", "temp1"]);
 
          const res = await exec();
@@ -225,7 +225,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if password is not valid", async () => {
+      it("should return 400 if password is not valid", async () => {
          user_data.email = "1234";
 
          const res = await exec();
@@ -233,7 +233,7 @@ describe("/api/users", () => {
          expect(res.status).toBe(400);
       });
 
-      it("should return 404 if password is greater then 255 characters", async () => {
+      it("should return 400 if password is greater then 255 characters", async () => {
          let password = new Array(257).join("a");
          user_data.password = password;
 
