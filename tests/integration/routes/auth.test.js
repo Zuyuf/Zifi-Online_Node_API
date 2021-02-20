@@ -16,6 +16,7 @@ describe("/api/auth", () => {
    });
 
    afterEach(async () => {
+      await User.remove();
       await server.close();
    });
 
