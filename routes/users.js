@@ -5,6 +5,8 @@ const config = require("config");
 const { User, validateUser } = require("../models/user");
 
 const auth = require("../middlewares/auth");
+const admin = require("../middlewares/admin");
+const validateObjectId = require("../middlewares/validateObjectId");
 const validate = require("../middlewares/validate");
 
 const router = express.Router();
@@ -12,21 +14,16 @@ const router = express.Router();
 //
 
 router.get("/me", [auth], async (req, res) => {
-   const users = await User.findById(req.user._id).select(
-      "-password -userDetails"
-   );
-   res.send(users);
+   const user = await User.findById(req.user._id).select("-password -__v");
+   res.send(user);
 });
 
 //
-// router.get("/:id", async (req, res) => {
-//    const user = await User.findById(req.params.id);
+router.get("/all", [auth, admin], async (req, res) => {
+   const users = await User.find().select("-__v");
 
-//    if (!user)
-//       return res.status(404).send("The User with given ID was Not Found!!");
-
-//    res.send(user);
-// });
+   res.send(users);
+});
 
 //
 router.post("/", [validate(validateUser)], async (req, res) => {
@@ -40,7 +37,9 @@ router.post("/", [validate(validateUser)], async (req, res) => {
    await user.save();
 
    const token = user.genereateAuthToken();
-   res.header("x-auth-token", token).send(_.pick(user, ["name", "email"]));
+   res.header("x-auth-token", token).send(
+      _.pick(user, ["_id", "name", "email", "isAdmin"])
+   );
 });
 
 //
@@ -63,6 +62,17 @@ router.post("/", [validate(validateUser)], async (req, res) => {
 //
 router.delete("/me", [auth], async (req, res) => {
    const user = await User.findByIdAndDelete(req.user._id);
+
+   if (!user)
+      return res.status(404).send("The User with given ID was Not Found!!");
+
+   res.send(user);
+});
+
+router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
+   const user = await User.findByIdAndDelete(req.params.id).select(
+      "-password -__v"
+   );
 
    if (!user)
       return res.status(404).send("The User with given ID was Not Found!!");
