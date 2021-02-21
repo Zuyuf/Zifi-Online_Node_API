@@ -2,12 +2,12 @@ const express = require("express");
 const _ = require("lodash");
 
 const { UserDetail, validateUserDetail } = require("../models/userDetail");
+const { User } = require("../models/user");
 
 const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
 const validate = require("../middlewares/validate");
 const validateObjectId = require("../middlewares/validateObjectId");
-const { cond } = require("lodash");
 
 const router = express.Router();
 
@@ -21,9 +21,9 @@ router.get("/", [auth, admin], async (req, res) => {
 
 //
 router.get("/me", [auth], async (req, res) => {
-   const userDetail = await UserDetail.find({ user_id: req.user._id });
+   const userDetail = await UserDetail.findOne({ user_id: req.user._id });
 
-   if (!userDetail.length)
+   if (!userDetail)
       return res
          .status(404)
          .send("The User Details with given User ID was Not Found!!");
@@ -35,8 +35,14 @@ router.get("/me", [auth], async (req, res) => {
 router.post("/", [auth, validate(validateUserDetail)], async (req, res) => {
    req.body.user_id = req.user._id;
 
-   let userDetails = new UserDetail(UserDetail.pickReqiuredParams(req.body));
+   const userDetails = new UserDetail(UserDetail.pickReqiuredParams(req.body));
    await userDetails.save();
+
+   await User.findByIdAndUpdate(
+      req.user._id,
+      { userDetails: userDetails._id },
+      { new: true }
+   );
 
    res.send(userDetails);
 });
