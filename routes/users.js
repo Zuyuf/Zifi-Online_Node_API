@@ -1,13 +1,15 @@
 const _ = require("lodash");
 const express = require("express");
 const config = require("config");
+const bcrypt = require("bcrypt");
 
 const { User, validateUser } = require("../models/user");
+const { UserDetail } = require("../models/userDetail");
 
 const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
-const validateObjectId = require("../middlewares/validateObjectId");
 const validate = require("../middlewares/validate");
+const validateObjectId = require("../middlewares/validateObjectId");
 
 const router = express.Router();
 
@@ -30,13 +32,16 @@ router.post("/", [validate(validateUser)], async (req, res) => {
    let user = await User.findOne({ email: req.body.email });
    if (user) return res.status(400).send("User already registered!");
 
-   user = new User(_.pick(user, ["name", "email", "password"]));
+   req.body.userDetails = [];
+   user = new User(
+      _.pick(req.body, ["name", "email", "password", "isAdmin", "userDetails"])
+   );
 
    const salt = await bcrypt.genSalt(config.get("bcryptSaltKey"));
    user.password = await bcrypt.hash(user.password, salt);
    await user.save();
 
-   const token = user.genereateAuthToken();
+   const token = user.generateAuthToken();
    res.header("x-auth-token", token).send(
       _.pick(user, ["_id", "name", "email", "isAdmin"])
    );
@@ -66,6 +71,10 @@ router.delete("/me", [auth], async (req, res) => {
    if (!user)
       return res.status(404).send("The User with given ID was Not Found!!");
 
+   await UserDetail.deleteMany({
+      _id: { $in: user.userDetails },
+   });
+
    res.send(user);
 });
 
@@ -76,6 +85,10 @@ router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
 
    if (!user)
       return res.status(404).send("The User with given ID was Not Found!!");
+
+   await UserDetail.deleteMany({
+      _id: { $in: user.userDetails },
+   });
 
    res.send(user);
 });
