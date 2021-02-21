@@ -9,7 +9,7 @@ let server;
 
 //
 //
-describe("/api/auth", () => {
+describe("/api/userDetails", () => {
    //
    beforeEach(() => {
       server = require("../../../index");
@@ -211,12 +211,16 @@ describe("/api/auth", () => {
                   line1: "01234567890123",
                   line2: "01234567890123",
                   pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
                },
                {
                   name: "Work Address",
                   line1: "01234567890123",
                   line2: "01234567890123",
                   pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
                },
             ],
             homePhone: 123456789,
@@ -284,9 +288,7 @@ describe("/api/auth", () => {
          const res = await exec();
 
          expect(res.status).toBe(200);
-         expect(res.body).toHaveLength(1);
-
-         expect(res.body[0]).toMatchObject(userDetails_data);
+         expect(res.body).toMatchObject(userDetails_data);
       });
    });
 
@@ -318,6 +320,8 @@ describe("/api/auth", () => {
                   line1: "01234567890123",
                   line2: "01234567890123",
                   pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
                },
             ],
             homePhone: 123456789,
@@ -457,8 +461,16 @@ describe("/api/auth", () => {
       //
       //
       //
-      it("should return 400 if addresses is not passed", async () => {
+      it("should return 200 if addresses is not passed", async () => {
          userDetails_data = _.omit(userDetails_data, ["addresses"]);
+
+         const res = await exec();
+
+         expect(res.status).toBe(200);
+      });
+      //
+      it("should return 400 if addresses is passed as [] array", async () => {
+         userDetails_data.addresses = [];
 
          const res = await exec();
 
@@ -489,7 +501,6 @@ describe("/api/auth", () => {
 
          expect(res.status).toBe(400);
       });
-
       //
       it("should return 400 if addresses[0].line1 is not passed", async () => {
          userDetails_data.addresses = _.omit(userDetails_data.addresses, [
@@ -514,7 +525,6 @@ describe("/api/auth", () => {
 
          expect(res.status).toBe(400);
       });
-
       //
       it("should return 400 if addresses[0].line2 is not passed", async () => {
          userDetails_data.addresses = _.omit(userDetails_data.addresses, [
@@ -539,7 +549,6 @@ describe("/api/auth", () => {
 
          expect(res.status).toBe(400);
       });
-
       //
       it("should return 400 if addresses[0].pincode is not passed", async () => {
          userDetails_data.addresses = _.omit(userDetails_data.addresses, [
@@ -564,12 +573,70 @@ describe("/api/auth", () => {
 
          expect(res.status).toBe(400);
       });
+      //
+      it("should return 400 if addresses[0].phoneNumber is not passed", async () => {
+         userDetails_data.addresses = _.omit(userDetails_data.addresses, [
+            "phoneNumber",
+         ]);
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
+      it("should return 400 if addresses[0].phoneNumber is less then 5 character", async () => {
+         userDetails_data.addresses[0].phoneNumber = 1234;
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
+      it("should return 400 if addresses[0].phoneNumber is greater then 50 character", async () => {
+         userDetails_data.addresses[0].phoneNumber = parseInt(
+            new Array(22).join("1")
+         );
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
+      //
+      it("should return 400 if addresses[0].landMark is not passed", async () => {
+         userDetails_data.addresses = _.omit(userDetails_data.addresses, [
+            "landMark",
+         ]);
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
+      it("should return 400 if addresses[0].landMark is lesser then 5 character", async () => {
+         userDetails_data.addresses[0].landMark = "land";
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
+      it("should return 400 if addresses[0].landMark is greater then 50 character", async () => {
+         userDetails_data.addresses[0].landMark = new Array(52).join("L");
+
+         const res = await exec();
+
+         expect(res.status).toBe(400);
+      });
 
       //
       //
       //
-      it("should return 400 if cards is not passed", async () => {
+      it("should return 200 if cards is not passed", async () => {
          userDetails_data = _.omit(userDetails_data, ["cards"]);
+
+         const res = await exec();
+
+         expect(res.status).toBe(200);
+      });
+      //
+      it("should return 400 if cards is passed as [] array", async () => {
+         userDetails_data.cards = [];
 
          const res = await exec();
 
@@ -629,7 +696,11 @@ describe("/api/auth", () => {
       it("should return 200 if user is logged in", async () => {
          const res = await exec();
 
+         const userDetails1 = UserDetail.findById(res.body._id);
+         const user1 = User.findById(user._id);
+
          expect(res.status).toBe(200);
+         expect(user1).toHaveProperty("userDetails", userDetails1._id);
       });
 
       it("should return users details if user is logged in", async () => {
@@ -671,6 +742,8 @@ describe("/api/auth", () => {
                   line1: "01234567890123",
                   line2: "01234567890123",
                   pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
                },
             ],
             homePhone: 123456789,
@@ -777,6 +850,8 @@ describe("/api/auth", () => {
                   line1: "01234567890123",
                   line2: "01234567890123",
                   pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
                },
             ],
             homePhone: 123456789,
@@ -794,8 +869,6 @@ describe("/api/auth", () => {
 
          token = user.generateAuthToken();
          id = userDetails._id.toHexString();
-
-         userDetails_data = _.omit(userDetails_data, ["user_id"]);
       });
 
       afterEach(async () => {
