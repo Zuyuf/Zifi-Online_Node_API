@@ -11,7 +11,7 @@ describe("/api/categories", () => {
       server = require("../../../index");
       user_data = {
          name: "ABCDEF",
-         email: "abcdef@xyz.com",
+         email: "abcdefzz@xyz.com",
          password: "12345678",
          isAdmin: true,
       };
