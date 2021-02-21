@@ -31,6 +31,19 @@ const address = new mongoose.Schema({
       minlength: 4,
       maxlength: 10,
    },
+
+   phoneNumber: {
+      type: Number,
+      required: true,
+      minlength: 5,
+      maxlength: 20,
+   },
+
+   landMark: {
+      type: String,
+      minlength: 5,
+      maxlngth: 50,
+   },
 });
 
 const card = new mongoose.Schema({
@@ -68,10 +81,7 @@ const userDetailSchema = new mongoose.Schema({
       maxlength: 50,
    },
 
-   addresses: {
-      type: [address],
-      required: true,
-   },
+   addresses: [address],
 
    homePhone: {
       type: Number,
@@ -86,10 +96,7 @@ const userDetailSchema = new mongoose.Schema({
       maxlength: 20,
    },
 
-   cards: {
-      type: [card],
-      required: true,
-   },
+   cards: [card],
 });
 
 userDetailSchema.statics.pickReqiuredParams = function (data) {
@@ -112,6 +119,12 @@ function validateUserDetail(details) {
       line1: Joi.string().trim().min(10).max(100).required(),
       line2: Joi.string().trim().min(10).max(100).required(),
       pincode: Joi.string().trim().min(4).max(10).required(),
+      phoneNumber: Joi.number()
+         .integer()
+         .min(10 ** 4)
+         .max(10 ** 19)
+         .required(),
+      landMark: Joi.string().trim().min(5).max(50).required(),
    });
 
    const joiCardsSchema = Joi.object({
@@ -122,7 +135,7 @@ function validateUserDetail(details) {
    const joiUserDetailSchema = Joi.object({
       firstName: Joi.string().trim().min(5).max(50).required(),
       lastName: Joi.string().trim().min(5).max(50).required(),
-      addresses: Joi.array().min(1).max(5).items(joiAddressSchema).required(),
+      addresses: Joi.array().min(1).max(5).items(joiAddressSchema),
       homePhone: Joi.number()
          .integer()
          .min(10 ** 4)
@@ -133,7 +146,7 @@ function validateUserDetail(details) {
          .min(10 ** 4)
          .max(10 ** 19)
          .required(),
-      cards: Joi.array().min(1).max(5).items(joiCardsSchema).required(),
+      cards: Joi.array().min(1).max(5).items(joiCardsSchema),
    });
 
    return joiUserDetailSchema.validate(details);
