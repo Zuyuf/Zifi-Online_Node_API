@@ -3,6 +3,7 @@ const _ = require("lodash");
 const { Category } = require("../../../models/category");
 const { User } = require("../../../models/user");
 const mongoose = require("mongoose");
+const { UserDetail } = require("../../../models/userDetail");
 
 let server;
 
@@ -247,7 +248,9 @@ describe("/api/users", () => {
    //
    describe("DELETE /me", () => {
       let user_data;
+      let userDetails_data;
       let user;
+      let userDetails;
       let token;
 
       beforeEach(async () => {
@@ -259,6 +262,36 @@ describe("/api/users", () => {
          };
 
          user = new User(user_data);
+         await user.save();
+
+         userDetails_data = {
+            user_id: user._id.toHexString(),
+            firstName: "Zuyuf2",
+            lastName: "Manna",
+            addresses: [
+               {
+                  name: "Home Address",
+                  line1: "01234567890123",
+                  line2: "01234567890123",
+                  pincode: "X87BH112",
+                  phoneNumber: 123456789,
+                  landMark: "land Mark...",
+               },
+            ],
+            homePhone: 123456789,
+            workPhone: 123456789,
+            cards: [
+               {
+                  name: "State Bank",
+                  cardNumber: "ABC4h456",
+               },
+            ],
+         };
+
+         userDetails = new UserDetail(userDetails_data);
+         await userDetails.save();
+
+         user.userDetails = userDetails._id;
          await user.save();
 
          token = user.generateAuthToken();
@@ -284,9 +317,12 @@ describe("/api/users", () => {
       it("should delete user if client is logged in", async () => {
          const res = await exec();
 
-         const user = await User.find({ email: user_data.email });
+         const user1 = await User.find({ email: user_data.email });
+         const userDetails1 = await UserDetail.find({ _id: userDetails._id });
 
-         expect(user).toHaveLength(0);
+         expect(res.status).toBe(200);
+         expect(user1).toHaveLength(0);
+         expect(userDetails1).toHaveLength(0);
       });
 
       it("should return user if client is deleted", async () => {
