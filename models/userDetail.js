@@ -1,7 +1,49 @@
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
+
 const mongoose = require("mongoose");
 const _ = require("lodash");
+
+const { User } = require("./user");
+
+//
+
+const joiAddressSchema = Joi.object({
+   name: Joi.string().trim().min(5).max(50).required(),
+   line1: Joi.string().trim().min(10).max(100).required(),
+   line2: Joi.string().trim().min(10).max(100).required(),
+   pincode: Joi.string().trim().min(4).max(10).required(),
+   phoneNumber: Joi.number()
+      .integer()
+      .min(10 ** 4)
+      .max(10 ** 19)
+      .required(),
+   landMark: Joi.string().trim().min(5).max(50).required(),
+});
+
+const joiCardsSchema = Joi.object({
+   name: Joi.string().trim().min(5).max(50).required(),
+   cardNumber: Joi.string().trim().min(8).max(30).required(),
+});
+
+const joiUserDetailSchema = Joi.object({
+   firstName: Joi.string().trim().min(5).max(50).required(),
+   lastName: Joi.string().trim().min(5).max(50).required(),
+   addresses: Joi.array().min(1).max(5).items(joiAddressSchema),
+   homePhone: Joi.number()
+      .integer()
+      .min(10 ** 4)
+      .max(10 ** 19)
+      .required(),
+   workPhone: Joi.number()
+      .integer()
+      .min(10 ** 4)
+      .max(10 ** 19)
+      .required(),
+   cards: Joi.array().min(1).max(5).items(joiCardsSchema),
+});
+
+//
 
 const address = new mongoose.Schema({
    name: {
@@ -99,6 +141,8 @@ const userDetailSchema = new mongoose.Schema({
    cards: [card],
 });
 
+//
+
 userDetailSchema.statics.pickReqiuredParams = function (data) {
    return _.pick(data, [
       "user_id",
@@ -111,46 +155,126 @@ userDetailSchema.statics.pickReqiuredParams = function (data) {
    ]);
 };
 
+userDetailSchema.statics.pickAddressParams = function (data) {
+   return _.pick(data, [
+      "name",
+      "line1",
+      "line2",
+      "pincode",
+      "phoneNumber",
+      "landMark",
+   ]);
+};
+
+userDetailSchema.statics.pickCardParams = function (data) {
+   return _.pick(data, ["name", "cardNumber"]);
+};
+
+//
+
 const UserDetail = mongoose.model("UserDetail", userDetailSchema);
 
+//
+//
 function validateUserDetail(details) {
-   const joiAddressSchema = Joi.object({
-      name: Joi.string().trim().min(5).max(50).required(),
-      line1: Joi.string().trim().min(10).max(100).required(),
-      line2: Joi.string().trim().min(10).max(100).required(),
-      pincode: Joi.string().trim().min(4).max(10).required(),
-      phoneNumber: Joi.number()
-         .integer()
-         .min(10 ** 4)
-         .max(10 ** 19)
-         .required(),
-      landMark: Joi.string().trim().min(5).max(50).required(),
-   });
-
-   const joiCardsSchema = Joi.object({
-      name: Joi.string().trim().min(5).max(50).required(),
-      cardNumber: Joi.string().trim().min(8).max(30).required(),
-   });
-
-   const joiUserDetailSchema = Joi.object({
-      firstName: Joi.string().trim().min(5).max(50).required(),
-      lastName: Joi.string().trim().min(5).max(50).required(),
-      addresses: Joi.array().min(1).max(5).items(joiAddressSchema),
-      homePhone: Joi.number()
-         .integer()
-         .min(10 ** 4)
-         .max(10 ** 19)
-         .required(),
-      workPhone: Joi.number()
-         .integer()
-         .min(10 ** 4)
-         .max(10 ** 19)
-         .required(),
-      cards: Joi.array().min(1).max(5).items(joiCardsSchema),
-   });
-
    return joiUserDetailSchema.validate(details);
 }
 
+function validateAddress(address) {
+   return joiAddressSchema.validate(address);
+}
+
+function validateCard(card) {
+   return joiCardsSchema.validate(card);
+}
+
+//
+
+async function validatIfUserExits(req) {
+   const user = await User.findById(req.user._id);
+
+   if (!user) {
+      return { status: 404, message: "User was Not Found" };
+   }
+
+   return false;
+}
+
+async function validateIfUserDetailsExits(req) {
+   const userDetails = await UserDetail.findOne({ user_id: req.user._id });
+
+   if (!userDetails) {
+      return {
+         status: 404,
+         message:
+            "The User Details with given User ID was Not Found!!, Fill in Yours Personal Details first",
+      };
+   }
+
+   req.userDetails = userDetails.toObject();
+
+   return false;
+}
+
+async function validateIfAddressIdExits(req) {
+   const userDetails = await UserDetail.findOne({
+      "addresses._id": req.params.id,
+   });
+
+   if (!userDetails) {
+      return { status: 404, message: "Address with given Id was Not Found!!" };
+   }
+
+   req.userDetails = userDetails.toObject();
+   return false;
+}
+
+//
+
+function updateAddress(addressData, addressId) {
+   addressData._id = addressId;
+   const query = { "addresses._id": addressId };
+
+   return UserDetail.findOne(query).then((doc) => {
+      const addressIndex = doc.addresses
+         .map((obj) => obj._id)
+         .indexOf(addressId);
+
+      doc.addresses[addressIndex] = addressData;
+      doc.save();
+
+      return { updatedDoc: doc, updatedAddressIndex: addressIndex };
+   });
+}
+
+function deleteAddress(addressId) {
+   const query = { "addresses._id": addressId };
+
+   return UserDetail.findOne(query).then((doc) => {
+      const addressIndex = doc.addresses
+         .map((obj) => obj._id)
+         .indexOf(addressId);
+
+      let deletedAddress = doc.addresses.splice(addressIndex, 1);
+
+      doc.save();
+
+      return { updatedDoc: doc, deletedAddress: deletedAddress };
+   });
+}
+
+//
+//
+
 exports.UserDetail = UserDetail;
+
 exports.validateUserDetail = validateUserDetail;
+exports.validateAddress = validateAddress;
+exports.validateCard = validateCard;
+
+exports.validatIfUserExits = validatIfUserExits;
+exports.validateIfUserDetailsExits = validateIfUserDetailsExits;
+exports.validateIfAddressIdExits = validateIfAddressIdExits;
+
+exports.updateAddress = updateAddress;
+exports.deleteAddress = deleteAddress;
