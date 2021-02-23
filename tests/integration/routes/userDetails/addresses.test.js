@@ -504,13 +504,7 @@ describe("/api/userDetails/addresses", () => {
 
       //
       it("should return 200 if user is logged in", async () => {
-         console.log(
-            ">>>>>>    return 200 if user is logged in : data :  ",
-            await User.findById(user._id)
-         );
-
          const res = await exec();
-         console.log(">>>>>>    res.body :  ", res.body);
 
          expect(res.status).toBe(200);
       });
