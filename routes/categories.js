@@ -21,7 +21,9 @@ router.get("/:id", [validateObjectId], async (req, res) => {
    const category = await Category.findById(req.params.id);
 
    if (!category)
-      return res.status(404).send("The category with given ID was not Found!!");
+      return res
+         .status(404)
+         .send({ message: "The category with given ID was not Found!!" });
 
    res.send(category);
 });
@@ -52,7 +54,7 @@ router.put(
       if (!category)
          return res
             .status(404)
-            .send("The category with given ID was not Found!!");
+            .send({ message: "The category with given ID was not Found!!" });
 
       res.send(category);
    }
@@ -63,7 +65,9 @@ router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
    const category = await Category.findByIdAndDelete(req.params.id);
 
    if (!category)
-      return res.status(404).send("The category with given ID was not Found!!");
+      return res
+         .status(404)
+         .send({ message: "The category with given ID was not Found!!" });
 
    res.send(category);
 });
