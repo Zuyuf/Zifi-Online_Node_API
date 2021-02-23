@@ -30,7 +30,8 @@ router.get("/all", [auth, admin], async (req, res) => {
 //
 router.post("/", [validate(validateUser)], async (req, res) => {
    let user = await User.findOne({ email: req.body.email });
-   if (user) return res.status(400).send("User already registered!");
+   if (user)
+      return res.status(400).send({ message: "User already registered!" });
 
    req.body.userDetails = [];
    user = new User(
@@ -69,7 +70,9 @@ router.delete("/me", [auth], async (req, res) => {
    const user = await User.findByIdAndDelete(req.user._id);
 
    if (!user)
-      return res.status(404).send("The User with given ID was Not Found!!");
+      return res
+         .status(404)
+         .send({ message: "The User with given ID was Not Found!!" });
 
    await UserDetail.deleteMany({
       _id: { $in: user.userDetails },
@@ -84,7 +87,9 @@ router.delete("/:id", [auth, admin, validateObjectId], async (req, res) => {
    );
 
    if (!user)
-      return res.status(404).send("The User with given ID was Not Found!!");
+      return res
+         .status(404)
+         .send({ message: "The User with given ID was Not Found!!" });
 
    await UserDetail.deleteMany({
       _id: { $in: user.userDetails },
