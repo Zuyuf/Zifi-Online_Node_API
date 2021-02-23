@@ -20,5 +20,6 @@ function validateCategory(category) {
    return joiCategorySchema.validate(category);
 }
 
+exports.categorySchema = categorySchema;
 exports.Category = Category;
 exports.validateCategory = validateCategory;
