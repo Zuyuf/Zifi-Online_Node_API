@@ -14,7 +14,7 @@ const {
 const auth = require("../../middlewares/auth");
 const valW = require("../../middlewares/validateWrapper");
 const val = require("../../middlewares/validate");
-const validateObjectId = require("../../middlewares/validateObjectId");
+const valObjId = require("../../middlewares/validateObjectId");
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get("/me", [auth, valW(vUsrDetlsE)], async (req, res) => {
 });
 
 //
-router.get("/:id", [auth, validateObjectId, valW(vAdrsE)], async (req, res) => {
+router.get("/:id", [auth, valObjId, valW(vAdrsE)], async (req, res) => {
    const address = _.find(req.userDetails.addresses, "_id", req.params.id);
 
    res.send(address);
@@ -53,7 +53,7 @@ router.put(
    "/:id",
    [
       auth,
-      validateObjectId,
+      valObjId,
       val(validateAddress),
       valW(vUserE),
       valW(vUsrDetlsE),
@@ -64,7 +64,8 @@ router.put(
 
       const { updatedDoc, updatedAddressIndex } = await updateAddress(
          address_data,
-         req.params.id
+         req.params.id,
+         "addresses"
       );
 
       res.send(updatedDoc.addresses[updatedAddressIndex]);
@@ -72,14 +73,10 @@ router.put(
 );
 
 //
-router.delete(
-   "/:id",
-   [auth, validateObjectId, valW(vAdrsE)],
-   async (req, res) => {
-      const { updatedDoc, deletedAddress } = await deleteAddress(req.params.id);
+router.delete("/:id", [auth, valObjId, valW(vAdrsE)], async (req, res) => {
+   const { updatedDoc, deletedAddress } = await deleteAddress(req.params.id);
 
-      res.send(deletedAddress);
-   }
-);
+   res.send(deletedAddress);
+});
 
 module.exports = router;
