@@ -29,7 +29,7 @@ const joiCardsSchema = Joi.object({
 const joiUserDetailSchema = Joi.object({
    firstName: Joi.string().trim().min(5).max(50).required(),
    lastName: Joi.string().trim().min(5).max(50).required(),
-   addresses: Joi.array().min(1).max(5).items(joiAddressSchema),
+   addresses: Joi.array().min(0).max(5).items(joiAddressSchema),
    homePhone: Joi.number()
       .integer()
       .min(10 ** 4)
@@ -40,7 +40,7 @@ const joiUserDetailSchema = Joi.object({
       .min(10 ** 4)
       .max(10 ** 19)
       .required(),
-   cards: Joi.array().min(1).max(5).items(joiCardsSchema),
+   cards: Joi.array().min(0).max(5).items(joiCardsSchema),
 });
 
 //
@@ -176,12 +176,12 @@ const UserDetail = mongoose.model("UserDetail", userDetailSchema);
 
 //
 //
-function validateUserDetail(details) {
-   return joiUserDetailSchema.validate(details);
+function validateUserDetail(usr) {
+   return joiUserDetailSchema.validate(usr);
 }
 
-function validateAddress(address) {
-   return joiAddressSchema.validate(address);
+function validateAddress(adrs) {
+   return joiAddressSchema.validate(adrs);
 }
 
 function validateCard(card) {
@@ -229,6 +229,19 @@ async function validateIfAddressIdExits(req) {
    return false;
 }
 
+async function validateIfCardIdExits(req) {
+   const userDetails = await UserDetail.findOne({
+      "cards._id": req.params.id,
+   });
+
+   if (!userDetails) {
+      return { status: 404, message: "Card with given Id was Not Found!!" };
+   }
+
+   req.userDetails = userDetails.toObject();
+   return false;
+}
+
 //
 
 function updateAddress(addressData, addressId) {
@@ -264,6 +277,35 @@ function deleteAddress(addressId) {
 }
 
 //
+
+function updateCard(cardData, cardId) {
+   cardData._id = cardId;
+   const query = { "cards._id": cardId };
+
+   return UserDetail.findOne(query).then((doc) => {
+      const cardIndex = doc.cards.map((obj) => obj._id).indexOf(cardId);
+
+      doc.cards[cardIndex] = cardData;
+      doc.save();
+
+      return { updatedDoc: doc, updatedCardIndex: cardIndex };
+   });
+}
+
+function deleteCard(cardId) {
+   const query = { "cards._id": cardId };
+
+   return UserDetail.findOne(query).then((doc) => {
+      const cardIndex = doc.cards.map((obj) => obj._id).indexOf(cardId);
+
+      let deletedCard = doc.cards.splice(cardIndex, 1);
+      doc.save();
+
+      return { updatedDoc: doc, deletedCard: deletedCard };
+   });
+}
+
+//
 //
 
 exports.UserDetail = UserDetail;
@@ -275,6 +317,10 @@ exports.validateCard = validateCard;
 exports.validatIfUserExits = validatIfUserExits;
 exports.validateIfUserDetailsExits = validateIfUserDetailsExits;
 exports.validateIfAddressIdExits = validateIfAddressIdExits;
+exports.validateIfCardIdExits = validateIfCardIdExits;
 
 exports.updateAddress = updateAddress;
 exports.deleteAddress = deleteAddress;
+
+exports.updateCard = updateCard;
+exports.deleteCard = deleteCard;
