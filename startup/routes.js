@@ -2,6 +2,7 @@ const express = require("express");
 
 // Routes
 const categories = require("../routes/categories");
+const products = require("../routes/products");
 const userDetails = require("../routes/userDetails");
 const userDetailsAddresses = require("../routes/userDetails/addresses");
 const userDetailsCards = require("../routes/userDetails/cards");
@@ -13,6 +14,7 @@ module.exports = function (app) {
    // PIPELINE
    app.use(express.json());
    app.use("/api/categories", categories);
+   app.use("/api/products", products);
    app.use("/api/userDetails", userDetails);
    app.use("/api/userDetails/addresses", userDetailsAddresses);
    app.use("/api/userDetails/cards", userDetailsCards);
