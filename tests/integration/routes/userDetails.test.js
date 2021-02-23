@@ -17,6 +17,7 @@ describe("/api/userDetails", () => {
 
    afterEach(async () => {
       await User.remove();
+      await UserDetail.remove();
       await server.close();
    });
 
@@ -469,12 +470,12 @@ describe("/api/userDetails", () => {
          expect(res.status).toBe(200);
       });
       //
-      it("should return 400 if addresses is passed as [] array", async () => {
+      it("should return 200 if addresses is passed as [] array", async () => {
          userDetails_data.addresses = [];
 
          const res = await exec();
 
-         expect(res.status).toBe(400);
+         expect(res.status).toBe(200);
       });
       //
       //
@@ -635,12 +636,12 @@ describe("/api/userDetails", () => {
          expect(res.status).toBe(200);
       });
       //
-      it("should return 400 if cards is passed as [] array", async () => {
+      it("should return 200 if cards is passed as [] array", async () => {
          userDetails_data.cards = [];
 
          const res = await exec();
 
-         expect(res.status).toBe(400);
+         expect(res.status).toBe(200);
       });
       //
       //
