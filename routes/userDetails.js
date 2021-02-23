@@ -26,7 +26,9 @@ router.get("/me", [auth], async (req, res) => {
    if (!userDetail)
       return res
          .status(404)
-         .send("The User Details with given User ID was Not Found!!");
+         .send({
+            message: "The User Details with given User ID was Not Found!!",
+         });
 
    res.send(userDetail);
 });
@@ -63,7 +65,9 @@ router.put(
       if (!userDetails)
          return res
             .status(404)
-            .send("The User Details with given ID was Not Found!!");
+            .send({
+               message: "The User Details with given ID was Not Found!!",
+            });
 
       res.send(userDetails);
    }
@@ -76,7 +80,7 @@ router.delete("/:id", [auth, validateObjectId], async (req, res) => {
    if (!userDetails)
       return res
          .status(404)
-         .send("The User Details with given ID was Not Found!!");
+         .send({ message: "The User Details with given ID was Not Found!!" });
 
    res.send(userDetails);
 });
