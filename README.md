@@ -141,7 +141,7 @@ Further more, for every route there might be CRUD operations some of them with P
 > #### PUT /:id
 > - To Update Card with given ID for the requesting user
 > - User Should be Logged In
-> - JSON Object in Boddy of request
+> - JSON Object in Body of request
 >   - **_name_**:       String, Minimum 5 character, Maximum 50 character, REQUIRED
 >   - **_cardNumber_**: String, Minimum 8 character, Maximum 30 character, REQUIRED
 > 
@@ -150,6 +150,26 @@ Further more, for every route there might be CRUD operations some of them with P
 > - User Should be Logged In
 
 
+## Categories
+> **Route:  /api/categories**
+> 
+> #### GET/
+> - To get all the categories from DataBase
+> 
+> #### GET /:id
+> - To get the category with given ID from DataBase
+> 
+> #### POST /
+> - To Create a new Category 
+> - User Should be Logged In and Admin
+> 
+> #### PUT /:id
+> - To Update a Category with given ID from DataBase
+> - User Should be Logged In and Admin
+> 
+> #### DELETE /:id
+> - To Delete a Category with given ID from DataBase
+> - User Should be Logged In and Admin
 
 
 
