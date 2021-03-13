@@ -19,7 +19,8 @@ Further more, for every route there might be CRUD operations some of them with P
 
 
 ## User API
-> **Route:  /api/users**
+> **Route:  /api/users**  
+> This API will be useed to Create, Read, Update and Delete User  
 >
 > #### GET /me
 > - To get Details of the one requesting for the details
@@ -48,7 +49,7 @@ Further more, for every route there might be CRUD operations some of them with P
 
 ## Auth API
 > **Route:  /api/auth**  
-> This Route is used to Log In to Zifi-Online
+> This Route is used to Log In to Zifi-Online, which in return sends JWT(JsonWebToken) if Successfully Logged In
 > 
 > #### POST /
 > - JSON Object in Body of request
@@ -154,6 +155,7 @@ Further more, for every route there might be CRUD operations some of them with P
 
 ## Categories API
 > **Route:  /api/categories**
+> This API will be used to manage Product CAtegories
 > 
 > #### GET/
 > - To get all the categories from DataBase
@@ -180,6 +182,7 @@ Further more, for every route there might be CRUD operations some of them with P
 
 ## Products API
 > **Route:  /api/products**
+> this APi will be used to MAanage the Products
 > 
 > #### GET/
 > - To get all the Products from DataBase
@@ -222,6 +225,7 @@ Further more, for every route there might be CRUD operations some of them with P
 
 ## Order API
 > **Route:  /api/orders**
+> Use this APi to Read and Create Orders
 > 
 > #### GET/
 > - To get all the Orders from DataBase
