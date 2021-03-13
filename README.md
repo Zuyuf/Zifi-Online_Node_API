@@ -29,7 +29,7 @@ Further more, for every route there might be CRUD operations some of them with P
 - To get Details of all the User in DataBase
 - User Should be Logged In and Admin
 
-### POST / 
+#### POST / 
 - To Create a New User
 - JSON object in Body of Request
   - name: String, Min 5 characters, Max 50 characters, REQUIRED,
@@ -37,11 +37,11 @@ Further more, for every route there might be CRUD operations some of them with P
   - password: String, Min 4 characters, Max 255 characters, REQUIRED,
   - isAdmin: Boolean, OPTIONAL
 
-### DELETE /me
+#### DELETE /me
 - To Delete the User Profile of requesting User Permanently
 - Should be Logged In
 
-### DELETE /:id 
+#### DELETE /:id 
 - To Delete User with given ID Permanently.
 - User Should be Logged In and Admin
 
