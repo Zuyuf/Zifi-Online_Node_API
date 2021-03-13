@@ -45,7 +45,7 @@ const joiUserDetailSchema = Joi.object({
 
 //
 
-const address = new mongoose.Schema({
+const addressSchema = new mongoose.Schema({
    name: {
       type: String,
       required: true,
@@ -88,7 +88,7 @@ const address = new mongoose.Schema({
    },
 });
 
-const card = new mongoose.Schema({
+const cardSchema = new mongoose.Schema({
    name: {
       type: String,
       required: true,
@@ -123,7 +123,7 @@ const userDetailSchema = new mongoose.Schema({
       maxlength: 50,
    },
 
-   addresses: [address],
+   addresses: [addressSchema],
 
    homePhone: {
       type: Number,
@@ -138,7 +138,7 @@ const userDetailSchema = new mongoose.Schema({
       maxlength: 20,
    },
 
-   cards: [card],
+   cards: [cardSchema],
 });
 
 //
@@ -229,6 +229,18 @@ async function validateIfAddressIdExits(req) {
    return false;
 }
 
+async function checkIfAddressIdExits(id) {
+   const userDetails = await UserDetail.findOne({
+      "addresses._id": id,
+   });
+
+   if (!userDetails) {
+      return { status: 404, message: "Address with given Id was Not Found!!" };
+   }
+
+   return userDetails.toObject();
+}
+
 async function validateIfCardIdExits(req) {
    const userDetails = await UserDetail.findOne({
       "cards._id": req.params.id,
@@ -309,6 +321,9 @@ function deleteCard(cardId) {
 //
 
 exports.UserDetail = UserDetail;
+
+exports.addressSchema = addressSchema;
+exports.joiUserDetailSchema = joiUserDetailSchema;
 
 exports.validateUserDetail = validateUserDetail;
 exports.validateAddress = validateAddress;
