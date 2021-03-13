@@ -21,11 +21,11 @@ Further more, for every route there might be CRUD operations some of them with P
 ## User
 **Route:  /api/users**
 
-### GET /me
+#### GET /me
 - To get Details of the one requesting for the details
 - Should be Logged In
 
-### GET /all
+#### GET /all
 - To get Details of all the User in DataBase
 - User Should be Logged In and Admin
 
