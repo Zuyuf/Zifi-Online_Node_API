@@ -2,7 +2,6 @@ const express = require("express");
 const _ = require("lodash");
 
 const { Product, validateProduct: vProd } = require("../models/product");
-const { User } = require("../models/user");
 
 const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
