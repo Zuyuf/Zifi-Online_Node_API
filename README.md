@@ -58,7 +58,7 @@ Further more, for every route there might be CRUD operations some of them with P
 
 
 ## User Details API
-> **Route:  /api/userDetails**
+> **Route:  /api/userDetails**  
 > This Route is used to Access Details of User
 > 
 > #### GET /
@@ -83,7 +83,8 @@ Further more, for every route there might be CRUD operations some of them with P
  
 
 ## User Details Addresses API
-> **Route:  /api/userDetails/addresses**
+> **Route:  /api/userDetails/addresses**  
+> This Route is used to handle Addresses of User requesting the Service
 > 
 > #### GET /me
 > - To get all the Addresses the requesting user has created
@@ -121,7 +122,8 @@ Further more, for every route there might be CRUD operations some of them with P
 
 
 ## User Details Cards API
-> **Route:  /api/userDetails/cards**
+> **Route:  /api/userDetails/cards**  
+> This Route is used to handle Cards of User requesting the Service
 > 
 > #### GET /me
 > - To get all the Cards the requesting user has created
