@@ -32,10 +32,10 @@ Further more, for every route there might be CRUD operations some of them with P
 #### POST / 
 - To Create a New User
 - JSON object in Body of Request
-  - name: String, Min 5 characters, Max 50 characters, REQUIRED,
-  - email: String, Should be an E-mail, Min 5 characters, Max 255 characters, REQUIRED,
-  - password: String, Min 4 characters, Max 255 characters, REQUIRED,
-  - isAdmin: Boolean, OPTIONAL
+  - name:      String, Min 5 characters, Max 50 characters, REQUIRED,
+  - email:     String, Should be an E-mail, Min 5 characters, Max 255 characters, REQUIRED,
+  - password:  String, Min 4 characters, Max 255 characters, REQUIRED,
+  - isAdmin:   Boolean, OPTIONAL
 
 #### DELETE /me
 - To Delete the User Profile of requesting User Permanently
@@ -46,6 +46,15 @@ Further more, for every route there might be CRUD operations some of them with P
 - User Should be Logged In and Admin
 
 
+## Auth
+**Route:  /api/auth**  
+This Route is used to Log In to Zifi-Online
+
+#### POST /
+- JSON Object in Boddy of request
+  - email:     String, Should be an E-mail, Min 5 characters, Max 255 characters, REQUIRED,
+  - password:  String, Min 4 characters, Max 255 characters, REQUIRED,
+- JsonWebToken (JWT) will be Returned if successfully Logged In
 
 
 
