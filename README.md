@@ -176,5 +176,38 @@ Further more, for every route there might be CRUD operations some of them with P
 > - User Should be Logged In and Admin
 
 
+## Products
+> **Route:  /api/products**
+> 
+> #### GET/
+> - To get all the Products from DataBase
+> 
+> #### GET /:id
+> - To get the Product with given ID from DataBase
+> 
+> #### POST /
+> - To Create a new Product 
+> - User Should be Logged In and Admin
+> - JSON Object in Body of request
+>   - **_name_**:       String, Minimum 5 character, Maximum 50 character, REQUIRED
+> 
+> #### PUT /:id
+> - To Update a Product with given ID from DataBase
+> - User Should be Logged In and Admin
+> - JSON Object in Body of request
+>   - **_category_id_**:    ID of category, REQUIRED
+>   - **_name_**:           String, Minimum 5 character, Maximum 255 character, REQUIRED
+>   - **_price_**:          Number, Integer, Minimum 0, REQUIRED
+>   - **_description_**:    String, Minimum 5 character, Maximum 2048 character, REQUIRED
+>   - **_productDetails_**: Array, Minimum 1 item, Maximum 10 items
+>     - **_propGroupName_**:   String, Minimum 3 character, Maximum 50 character, REQUIRED
+>     - **_props_**:           Array, Minimum 1 item, Maximum 25 items
+>       - **_propName_**:           String, Minimum 3 character, Maximum 50 character, REQUIRED
+>       - **_propValue_**:          String, Minimum 3 character, Maximum 255 character, REQUIRED
+> 
+> #### DELETE /:id
+> - To Delete a Product with given ID from DataBase
+> - User Should be Logged In and Admin
+
 
 
