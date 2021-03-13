@@ -162,10 +162,14 @@ Further more, for every route there might be CRUD operations some of them with P
 > #### POST /
 > - To Create a new Category 
 > - User Should be Logged In and Admin
+> - JSON Object in Body of request
+>   - **_name_**:       String, Minimum 5 character, Maximum 50 character, REQUIRED
 > 
 > #### PUT /:id
 > - To Update a Category with given ID from DataBase
 > - User Should be Logged In and Admin
+> - JSON Object in Body of request
+>   - **_name_**:       String, Minimum 5 character, Maximum 50 character, REQUIRED
 > 
 > #### DELETE /:id
 > - To Delete a Category with given ID from DataBase
