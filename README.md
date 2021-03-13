@@ -14,7 +14,7 @@ An e-Commere API build using **Express**, **NodeJs** and **MongoDB**
 
 
 # Zifi-Online REST API Doc
-At the begining of Route below, Domain should be included (Eg: www.SomeDomain.com/Zifi-Online_Routes)
+At the begining of Route below, Domain should be included (Eg: www.SomeDomain.com)
 Further more, for every route there might be CRUD operations some of them with Parameters in URL or Query String
 
 
