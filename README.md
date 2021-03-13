@@ -150,7 +150,7 @@ Further more, for every route there might be CRUD operations some of them with P
 > - User Should be Logged In
 
 
-## Categories
+## Categories API
 > **Route:  /api/categories**
 > 
 > #### GET/
@@ -176,7 +176,7 @@ Further more, for every route there might be CRUD operations some of them with P
 > - User Should be Logged In and Admin
 
 
-## Products
+## Products API
 > **Route:  /api/products**
 > 
 > #### GET/
@@ -189,7 +189,15 @@ Further more, for every route there might be CRUD operations some of them with P
 > - To Create a new Product 
 > - User Should be Logged In and Admin
 > - JSON Object in Body of request
->   - **_name_**:       String, Minimum 5 character, Maximum 50 character, REQUIRED
+>   - **_category_id_**:    ID of category, REQUIRED
+>   - **_name_**:           String, Minimum 5 character, Maximum 255 character, REQUIRED
+>   - **_price_**:          Number, Integer, Minimum 0, REQUIRED
+>   - **_description_**:    String, Minimum 5 character, Maximum 2048 character, REQUIRED
+>   - **_productDetails_**: Array, Minimum 1 item, Maximum 10 items
+>     - **_propGroupName_**:   String, Minimum 3 character, Maximum 50 character, REQUIRED
+>     - **_props_**:           Array, Minimum 1 item, Maximum 25 items
+>       - **_propName_**:           String, Minimum 3 character, Maximum 50 character, REQUIRED
+>       - **_propValue_**:          String, Minimum 3 character, Maximum 255 character, REQUIRED
 > 
 > #### PUT /:id
 > - To Update a Product with given ID from DataBase
@@ -208,6 +216,26 @@ Further more, for every route there might be CRUD operations some of them with P
 > #### DELETE /:id
 > - To Delete a Product with given ID from DataBase
 > - User Should be Logged In and Admin
+
+
+## Order API
+> **Route:  /api/orders**
+> 
+> #### GET/
+> - To get all the Orders from DataBase
+> 
+> #### GET /:id
+> - To get the Order with given ID from DataBase
+> 
+> #### POST /
+> - To Create a new Order 
+> - User Should be Logged In and Admin
+> - JSON Object in Body of request
+>   - **_address_id_**:    ID of category, REQUIRED
+>   - **_products_**: Array, Minimum 1 item
+>     - **_productId_**:    ID of category, REQUIRED
+>     - **_quantity_**:     Number, Integer, Minimum 1, REQUIRED
+
 
 
 
